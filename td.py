@@ -24,7 +24,7 @@ class TD(Broker):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
         }
-        response = get(query_url.format(config['TICKER']), params=params, headers=headers)
+        response = get(query_url.format(config['SYMBOL']), params=params, headers=headers)
         if response.status_code == 401:
             self.refresh_token()
 
@@ -32,8 +32,8 @@ class TD(Broker):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
         }
-        response = get(query_url.format(config['TICKER']), params=params, headers=headers)
-        return float(response.json()[config['TICKER']]['askPrice'])
+        response = get(query_url.format(config['SYMBOL']), params=params, headers=headers)
+        return float(response.json()[config['SYMBOL']]['askPrice'])
 
     def refresh_token(self):
         # Refer to TD API - https://developer.tdameritrade.com/authentication/apis/post/token-0
@@ -54,7 +54,7 @@ class TD(Broker):
             # New access token
             config['TD_ACCESS_TOKEN'] = response.json()['access_token']
 
-    def place_order(self):
+    def place_order(self, quantity):
         # Refer to TD API - https://developer.tdameritrade.com/account-access/apis/post/accounts/%7BaccountId%7D/orders-0
         headers = {
             'Content-Type': 'application/json',
@@ -65,17 +65,16 @@ class TD(Broker):
         if response.status_code == 401:
             self.refresh_token()
         data = {
-            'orderType': 'LIMIT',
+            'orderType': 'MARKET',
             'session': 'NORMAL',
             'duration': 'DAY',
             'orderStrategyType': 'SINGLE',
-            'price': 1.00,
             'orderLegCollection': [
                 {
                     'instruction': 'Buy',
-                    'quantity': 1,
+                    'quantity': quantity,
                     'instrument': {
-                        'symbol': 'AAPL',
+                        'symbol': config['SYMBOL'],
                         'assetType': 'EQUITY'
                     }
                 }
@@ -87,3 +86,11 @@ class TD(Broker):
         }
         response = post(self._place_order_url, headers=headers, json=data)
         self.print_response(response)
+
+    def do_dca(self):
+        ask_price = self.get_price()
+        quantity = self.calculate_qty(ask_price)
+        self.place_order(quantity)
+        print("Placed order for {symbol}, {quantity}@{price}".format(
+            symbol=config['SYMBOL'], quantity=quantity, price=ask_price
+        ))

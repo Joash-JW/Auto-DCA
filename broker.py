@@ -27,9 +27,9 @@ class Broker(ABC):
     def do_dca(self): raise NotImplementedError
 
     def log_order(self, message):
-        today = datetime.now().date()
+        now = datetime.now()
         folder_path = getcwd().replace('\\', '/')+'/log'
         if not exists(folder_path):
             makedirs(folder_path)
-        with open('log/' + str(today) + '-order-log.txt', 'a') as file_object:
-            file_object.write(message+'\n')
+        with open('log/' + str(now.date()) + '-order-log.txt', 'a') as file_object:
+            file_object.write(now.strftime("%Y-%m-%d %H:%M:%S") + ' -- ' + message + '\n')

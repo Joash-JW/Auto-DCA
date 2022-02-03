@@ -1,5 +1,8 @@
 from config import config
 from abc import ABC, abstractmethod
+from datetime import datetime
+from os import getcwd, makedirs
+from os.path import exists
 
 
 class Broker(ABC):
@@ -22,3 +25,11 @@ class Broker(ABC):
 
     @abstractmethod
     def do_dca(self): raise NotImplementedError
+
+    def log_order(self, message):
+        today = datetime.now().date()
+        folder_path = getcwd().replace('\\', '/')+'/log'
+        if not exists(folder_path):
+            makedirs(folder_path)
+        with open('log/' + str(today) + '-order-log.txt', 'a') as file_object:
+            file_object.write(message+'\n')

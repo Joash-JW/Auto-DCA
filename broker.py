@@ -28,8 +28,8 @@ class Broker(ABC):
 
     def log_order(self, message):
         now = datetime.now()
-        folder_path = getcwd().replace('\\', '/')+'/log'
+        folder_path = getcwd().replace('\\', '/')+'/logs'
         if not exists(folder_path):
             makedirs(folder_path)
-        with open('log/' + str(now.date()) + '-order-log.txt', 'a') as file_object:
+        with open('logs/' + str(now.date()) + '-order-log.txt', 'a') as file_object:
             file_object.write(now.strftime("%Y-%m-%d %H:%M:%S") + ' -- ' + message + '\n')

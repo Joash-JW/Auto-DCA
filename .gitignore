@@ -134,4 +134,4 @@ dmypy.json
 # private config file
 config.py
 *.pem
-chromedriver.exe
+logs/

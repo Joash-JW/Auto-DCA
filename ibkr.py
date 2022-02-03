@@ -10,7 +10,7 @@ from threading import Thread
 
 
 class IBKR(EWrapper, EClient, Broker):
-    # IBKR class would need to override methods in EWrapper, EClient and implement Broker
+    # IBKR class would need to override methods in EWrapper, EClient and implement Broker.
 
     def __init__(self):
         EClient.__init__(self, self)
@@ -76,9 +76,11 @@ class IBKR(EWrapper, EClient, Broker):
         order.totalQuantity = quantity
 
         self.placeOrder(self.next_order_id, contract, order)
-        print("Placed order for {symbol}, {quantity}@{price}".format(
-            symbol=config['SYMBOL'], quantity=quantity, price=ask_price
-        ))
+        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
+            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
+        )
+        self.log_order(message)
+        print(message)
         self.stop()
 
     def do_dca(self):

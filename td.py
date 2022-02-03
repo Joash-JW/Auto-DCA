@@ -13,7 +13,7 @@ class TD(Broker):
 
     def print_response(self, response: Response):
         print('{name} Broker - HTTP_CODE={status_code}&MESSAGE={message}'.format(
-            name=self.name, status_code=response.status_code, message=response.json()
+            name=self.name, status_code=response.status_code, message=response.text
         ))
 
     def get_price(self):
@@ -24,16 +24,25 @@ class TD(Broker):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
         }
+
+        # Attempt 1 to see response status code.
         response = get(query_url.format(config['SYMBOL']), params=params, headers=headers)
+
+        # Refresh token if status code 401.
+        # From TD - indicating the caller must pass a valid Authorization in the HTTP authorization request header.
         if response.status_code == 401:
             self.refresh_token()
 
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
-        }
-        response = get(query_url.format(config['SYMBOL']), params=params, headers=headers)
-        return float(response.json()[config['SYMBOL']]['askPrice'])
+            # Resend request using the new access token.
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
+            }
+            response = get(query_url.format(config['SYMBOL']), params=params, headers=headers)
+
+        assert response.status_code == 200  # only status code 200 is able to pass this step
+
+        return float(response.json()[config['SYMBOL']]['askPrice'])  # return ask price
 
     def refresh_token(self):
         # Refer to TD API - https://developer.tdameritrade.com/authentication/apis/post/token-0
@@ -60,10 +69,22 @@ class TD(Broker):
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
         }
+
+        # This request does not actually place the order.
+        # Test request to ensure status code 200.
         response = post(self._place_order_url, headers=headers)
-        self.print_response(response)
+
+        # Refresh token if status code 401.
         if response.status_code == 401:
             self.refresh_token()
+
+            # Update with new access token after refresh.
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
+            }
+
+        # This specifies the order that will be placed.
         data = {
             'orderType': 'MARKET',
             'session': 'NORMAL',
@@ -80,10 +101,7 @@ class TD(Broker):
                 }
             ]
         }
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + config['TD_ACCESS_TOKEN']
-        }
+
         response = post(self._place_order_url, headers=headers, json=data)
         self.print_response(response)
 
@@ -91,6 +109,8 @@ class TD(Broker):
         ask_price = self.get_price()
         quantity = self.calculate_qty(ask_price)
         self.place_order(quantity)
-        print("Placed order for {symbol}, {quantity}@{price}".format(
-            symbol=config['SYMBOL'], quantity=quantity, price=ask_price
-        ))
+        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
+            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
+        )
+        self.log_order(message)
+        print(message)

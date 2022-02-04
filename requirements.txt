@@ -1,3 +1,5 @@
 requests
+pytz
+python-dateutil
 futu-api
 tigeropen

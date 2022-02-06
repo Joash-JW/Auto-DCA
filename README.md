@@ -1,6 +1,22 @@
 # Auto-DCA
 A tutorial to automate your monthly Dollar-Cost Averaging.
 
+## Table of Contents
+- [Description](#description)
+- [Getting Started](#getting-started)
+  + [Directory Structure](#directory-structure)
+  + [Dependencies](#dependencies)
+  + [Installation](#installation)
+  + [Running the Program](#running-the-program)
+- [Broker Specific Set-Up](#broker-specific-set-up)
+  + [TD Ameritrade](#td-ameritrade)
+  + [Interactive Brokers](#interactive-brokers)
+  + [Tiger Brokers](#tiger-brokers)
+  + [MooMoo](#moomoo)
+  + [References](#references)
+
+<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
+
 ## Description
 This application is mainly a tutorial to automate your **MONTHLY** [Dollar-Cost Averaging](https://www.investopedia.com/terms/d/dollarcostaveraging.asp) tasks. This program is written in `Python`.
 I have included the basic code to showcase how to place order with mainly these 4 brokers: **TD Ameritrade**, **Interactive Brokers**, **Tiger Brokers** and **MooMoo**.
@@ -32,7 +48,7 @@ I have included the basic code to showcase how to place order with mainly these 
 This is written and tested with `Python3`.
 
 ### Installation
-1. Set-up your respective broker, refer below [Broker Specifc Set-Up](https://github.com/Joash-JW/Auto-DCA#broker-specific-set-up).
+1. Set-up your respective broker, refer below [Broker Specifc Set-Up](#broker-specific-set-up).
 2. Clone the repo
     ```commandline
     git clone https://github.com/Joash-JW/Auto-DCA.git

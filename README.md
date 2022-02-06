@@ -7,7 +7,7 @@ I have included the basic code to showcase how to place order with mainly these 
 
 > Dollar-cost averaging (DCA) is an investment strategy in which an investor divides up the total amount to be invested across periodic purchases of a target asset in an effort to reduce the impact of volatility on the overall purchase. The purchases occur regardless of the asset's price and at regular intervals. (*From Investopedia*)
 
-:white_check_mark: Do: Recommended to first try this out with a paper trading account and modify this application to suit your needs.
+:warning: Recommended to first try this out with a paper trading account and modify this application to suit your needs.
 
 ## Getting Started
 ### Directory Structure
@@ -85,7 +85,7 @@ Most of the steps are similar to https://www.reddit.com/r/algotrading/comments/c
 14. Set-up complete!
 
 ### Interactive Brokers
-:white_check_mark: Do: Recommended to first try this out with a paper trading account.
+:warning: Recommended to first try this out with a paper trading account.
 
 Refer to their official guide on creating a paper account https://www.interactivebrokers.com/en/software/ptgstl/topics/papertrader.htm
 
@@ -98,7 +98,7 @@ Refer to their official guide on creating a paper account https://www.interactiv
 7. Set-up complete! Make sure TWS or IB Gateway is running **before** running the application.
 
 ### Tiger Brokers
-:white_check_mark: Do: Recommended to first try this out on your paper trading account.
+:warning: Recommended to first try this out on your paper trading account.
 
 1. Generate your private and public key. :heavy_exclamation_mark: Note: generated key needs to be in **1024 bits**
    
@@ -125,7 +125,7 @@ Refer to their official guide on creating a paper account https://www.interactiv
 4. Set-up complete!
 
 ### MooMoo
-:white_check_mark: Do: Recommended to first try this out on your paper trading account.
+:warning: Recommended to first try this out on your paper trading account.
 
 1. Download FutuOpenD from https://www.moomoo.com/download/ > OpenAPI > FutuOpenD
 2. Install FutuOpenD, you can choose between the command line or the GUI version but for this tutorial I chose the GUI version

@@ -87,7 +87,7 @@ Most of the steps are similar to https://www.reddit.com/r/algotrading/comments/c
 8. Log In to your TD Ameritrade Account (**NOT** your TD Ameritrade Developer Account) and click Allow
 9. After the above step, you will see a "This site can’t be reached" and this is **EXPECTED**
 10. Copy the code parameter of the URL on this page, `https://localhost/?code=<COPY THIS>` ![TD code](https://preview.redd.it/uhuxz95f0s731.png?width=578&format=png&auto=webp&s=03d7d73869c0ab41021e93acf11e7dc192035ad8)
-11. Do a URL Decode of the above step, and this will be your `config['TD_CODE`] 
+11. Do a URL Decode of the above step, and this will be your `config['TD_CODE']` 
 12. Go to this site https://developer.tdameritrade.com/authentication/apis/post/token-0, fill in the Body Parameters and hit Send.
     ```text
     grant_type: authorization_code (type in exactly authorization_code)

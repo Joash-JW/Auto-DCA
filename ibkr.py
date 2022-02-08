@@ -17,7 +17,6 @@ class IBKR(EWrapper, EClient, Broker):
         self._ibkr_thread = None
         self._market_data_type = MarketDataTypeEnum.DELAYED  # Use "REALTIME" if you have market data subscription
         self.next_order_id = None
-        self.ask_price = None
 
     def set_connection(self):
         # Make connection to Interactive Brokers TWS/IB Gateway.
@@ -61,7 +60,7 @@ class IBKR(EWrapper, EClient, Broker):
         if tickType == TickTypeEnum.ASK or tickType == TickTypeEnum.DELAYED_ASK:
             self.ask_price = price
             quantity = self.calculate_qty(self.ask_price)
-            self.place_order(quantity, price)  # subsequent step after get_price ends
+            self.place_order(quantity)  # subsequent step after get_price ends
 
     def place_order(self, quantity):
         # Wrapper method to place order via Interactive Brokers TWS/IB Gateway.

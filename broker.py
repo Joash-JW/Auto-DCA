@@ -8,10 +8,23 @@ from os.path import exists
 class Broker(ABC):
     # abstract class
 
+    def __init__(self):
+        self._ask_price = None
+
     # getter for class name
     @property
     def name(self):
         return self.__class__.__name__
+
+    @property
+    def ask_price(self):
+        return self._ask_price
+
+    @ask_price.setter
+    def ask_price(self, ask_price):
+        assert ask_price > 0
+        assert type(ask_price) is float
+        self._ask_price = ask_price
 
     # methods for subclasses to implement
     @abstractmethod
@@ -21,10 +34,17 @@ class Broker(ABC):
         return config['ALLOCATION']//price
 
     @abstractmethod
-    def place_order(self): raise NotImplementedError
+    def place_order(self, quantity: int): raise NotImplementedError
 
-    @abstractmethod
-    def do_dca(self): raise NotImplementedError
+    def do_dca(self):
+        self._ask_price = self.get_price()
+        quantity = self.calculate_qty(self._ask_price)
+        self.place_order(quantity)
+        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
+            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=self.ask_price
+        )
+        self.log_order(message)
+        print(message)
 
     def log_order(self, message):
         now = datetime.now()

@@ -17,7 +17,7 @@ class MooMoo(Broker):
                        headers=header)
         return response.json()['quoteResponse']['result'][0]['ask']
 
-    def place_order(self, quantity, ask_price):
+    def place_order(self, quantity):
         # Create trade object
         trade_context = OpenUSTradeContext(host=config['MOOMOO_IP'], port=config['MOOMOO_PORT'])
         # Remove trd_env for it to trade on your REAL account instead of paper.
@@ -25,18 +25,8 @@ class MooMoo(Broker):
         # Limit order used to demonstrate (OrderType.NORMAL).
         # Change price=0 and order_type=OrderType.MARKET to make it a market order.
         result = trade_context.place_order(
-            price=ask_price, qty=quantity, code='US.'+config['SYMBOL'], trd_side=TrdSide.BUY,
+            price=self.ask_price, qty=quantity, code='US.'+config['SYMBOL'], trd_side=TrdSide.BUY,
             order_type=OrderType.NORMAL, trd_env=TrdEnv.SIMULATE
         )
         # Close trade object
         trade_context.close()
-
-    def do_dca(self):
-        ask_price = self.get_price()
-        quantity = self.calculate_qty(ask_price)
-        self.place_order(quantity, ask_price)
-        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
-            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
-        )
-        self.log_order(message)
-        print(message)

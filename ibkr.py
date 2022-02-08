@@ -37,13 +37,6 @@ class IBKR(EWrapper, EClient, Broker):
         # https://interactivebrokers.github.io/tws-api/interfaceIBApi_1_1EWrapper.html#a0dd0ca408b9ef70181cec1e5ac938039
         print('Error: ', reqId, ' ', errorCode, ' ', errorString)
 
-    def tickPrice(self, reqId, tickType, price, attrib):
-        # Override tickPrice method, returns the ask price of the stock.
-        # https://interactivebrokers.github.io/tws-api/interfaceIBApi_1_1EWrapper.html#ae851ec3a1e0fa2d0964c7779b0c89718
-        if tickType == TickTypeEnum.ASK or tickType == TickTypeEnum.DELAYED_ASK:
-            quantity = self.calculate_qty(price)
-            self.place_order(quantity, price)  # subsequent step after get_price ends
-
     def nextValidId(self, orderId:int):
         # This method is needed to prevent duplicate orders.
         super().nextValidId(orderId)
@@ -62,7 +55,15 @@ class IBKR(EWrapper, EClient, Broker):
         # https://interactivebrokers.github.io/tws-api/classIBApi_1_1EClient.html#a7a19258a3a2087c07c1c57b93f659b63
         self.reqMktData(1, contract, '', False, False, [])
 
-    def place_order(self, quantity, ask_price):
+    def tickPrice(self, reqId, tickType, price, attrib):
+        # Override tickPrice method, returns the ask price of the stock.
+        # https://interactivebrokers.github.io/tws-api/interfaceIBApi_1_1EWrapper.html#ae851ec3a1e0fa2d0964c7779b0c89718
+        if tickType == TickTypeEnum.ASK or tickType == TickTypeEnum.DELAYED_ASK:
+            self.ask_price = price
+            quantity = self.calculate_qty(self.ask_price)
+            self.place_order(quantity, price)  # subsequent step after get_price ends
+
+    def place_order(self, quantity):
         # Wrapper method to place order via Interactive Brokers TWS/IB Gateway.
         contract = Contract()
         contract.symbol = config['SYMBOL']
@@ -77,13 +78,14 @@ class IBKR(EWrapper, EClient, Broker):
 
         self.placeOrder(self.next_order_id, contract, order)
         message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
-            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
+            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=self.ask_price
         )
         self.log_order(message)
         print(message)
         self.stop()
 
     def do_dca(self):
+        # Override Parent method
         self.set_connection()
         self._ibkr_thread = Thread(target=self.run, daemon=True)
         self._ibkr_thread.start()

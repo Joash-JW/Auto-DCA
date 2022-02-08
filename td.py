@@ -104,13 +104,3 @@ class TD(Broker):
 
         response = post(self._place_order_url, headers=headers, json=data)
         self.print_response(response)
-
-    def do_dca(self):
-        ask_price = self.get_price()
-        quantity = self.calculate_qty(ask_price)
-        self.place_order(quantity)
-        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
-            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
-        )
-        self.log_order(message)
-        print(message)

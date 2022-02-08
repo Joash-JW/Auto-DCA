@@ -43,13 +43,3 @@ class Tiger(Broker):
         order = market_order(account=self._client_config.account, contract=contract,
                              action='BUY', quantity=quantity)
         trade_client.place_order(order)
-
-    def do_dca(self):
-        ask_price = self.get_price()
-        quantity = self.calculate_qty(ask_price)
-        self.place_order(quantity)
-        message = "{broker} Broker - Placed order for {symbol}, {quantity}@{price}".format(
-            broker=self.name, symbol=config['SYMBOL'], quantity=quantity, price=ask_price
-        )
-        self.log_order(message)
-        print(message)

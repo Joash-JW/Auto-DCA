@@ -1,5 +1,5 @@
 # Auto-DCA
-A tutorial to automate your monthly Dollar-Cost Averaging.
+A tutorial to automate your monthly Dollar-Cost Averaging. Code write-up can be found here https://medium.com/@joash.k/how-to-automate-your-dca-investment-strategy-using-python-b9c1abb432ea.
 
 ## Table of Contents
 - [Description](#description)
